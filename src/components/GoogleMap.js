@@ -1,6 +1,7 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import { useGeolocation } from 'hooks';
+
+import { useGeolocation } from '../hooks';
 
 export const Marker = ({ children }) => <>{children}</>;
 

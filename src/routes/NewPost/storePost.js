@@ -1,4 +1,4 @@
-import { axios } from 'api';
+import { axios } from '../../api';
 
 // import firebase, { storage, db } from 'api';
 
