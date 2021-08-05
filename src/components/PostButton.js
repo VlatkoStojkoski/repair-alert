@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Portal } from '@chakra-ui/react';
+import { Button, Portal } from '@chakra-ui/react';
 import { SmallAddIcon } from '@chakra-ui/icons';
 
 const PostButton = props => {

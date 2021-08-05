@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Portal } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 import MapView from './MapView';
 import PostButton from 'components/PostButton';

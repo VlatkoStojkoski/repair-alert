@@ -12,7 +12,6 @@ import {
   Textarea,
   VStack,
   Image,
-  Portal,
 } from '@chakra-ui/react';
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
