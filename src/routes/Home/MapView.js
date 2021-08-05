@@ -3,7 +3,7 @@ import useAxios from 'axios-hooks';
 import useSupercluster from 'use-supercluster';
 import { Box, Button, Flex, Image } from '@chakra-ui/react';
 
-import GoogleMap, { Marker } from 'components/GoogleMap';
+import GoogleMap, { Marker } from '../../components/GoogleMap';
 
 const MapView = () => {
   const mapRef = useRef();

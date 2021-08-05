@@ -17,9 +17,9 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
 import { gps as extractGps } from 'exifr';
 
-import PostButton from 'components/PostButton';
-import GoogleMap, { defaultCenter } from 'components/GoogleMap';
-import { MapPinIcon } from 'icons';
+import PostButton from '../../components/PostButton';
+import GoogleMap, { defaultCenter } from '../../components/GoogleMap';
+import { MapPinIcon } from '../../icons';
 import storePost from './storePost';
 
 const MotionBox = motion(
