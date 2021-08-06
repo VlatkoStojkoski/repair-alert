@@ -67,14 +67,16 @@ const NewPost = () => {
   const imageRef = useRef(null);
   const mapRef = useRef(null);
 
+  const formatExifLocation = ({ latitude, longitude }) =>
+    +latitude === latitude &&
+    +longitude === longitude && { lat: latitude, lng: longitude };
+
   useEffect(() => {
-    if (imageLocation) {
-      const latLngObject = {
-        lat: imageLocation.latitude,
-        lng: imageLocation.longitude,
-      };
-      mapRef.current.panTo(latLngObject);
-    }
+    if (!imageLocation) return;
+
+    const formattedLocation = formatExifLocation(imageLocation);
+
+    return formattedLocation && mapRef.current.panTo(formattedLocation);
   }, [imageLocation]);
 
   return (
