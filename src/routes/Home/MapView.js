@@ -5,23 +5,23 @@ import { Box, Button, Flex, Image } from '@chakra-ui/react';
 
 import GoogleMap, { Marker } from '../../components/GoogleMap';
 
-const MapView = () => {
+const MapView = ({ data }) => {
   const mapRef = useRef();
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(10);
 
-  const url =
-    'https://data.police.uk/api/crimes-street/all-crime?lat=52.629729&lng=-1.131592&date=2019-10';
-  const [{ data, error }] = useAxios(url);
-  const crimes = data && !error ? data?.slice(0, 50) : [];
-  const points = crimes.map(crime => ({
+  const points = data.map(post => ({
     type: 'Feature',
-    properties: { cluster: false, crimeId: crime.id, category: crime.category },
+    properties: {
+      cluster: false,
+      postId: post.id,
+      type: post.type,
+    },
     geometry: {
       type: 'Point',
       coordinates: [
-        parseFloat(crime.location.longitude),
-        parseFloat(crime.location.latitude),
+        parseFloat(post.location.longitude),
+        parseFloat(post.location.latitude),
       ],
     },
   }));
@@ -89,19 +89,16 @@ const MapView = () => {
 
           return (
             <Marker
-              key={`crime-${cluster.properties.crimeId}`}
+              key={`post-${cluster.properties.postId}`}
               lat={latitude}
               lng={longitude}
             >
+              {(() => console.log(cluster.properties))()}
               <Button variant="ghost" colorScheme="transparent">
                 <Image
                   w="25px"
-                  src={
-                    ['/waste.svg', '/road-damage.svg'][
-                      Math.floor(Math.random() * 2)
-                    ]
-                  }
-                  alt="crime doesn't pay"
+                  src={`/${cluster.properties.type}.svg`}
+                  alt="post image"
                 />
               </Button>
             </Marker>

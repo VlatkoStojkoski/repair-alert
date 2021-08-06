@@ -4,14 +4,18 @@ import { Box } from '@chakra-ui/react';
 
 import MapView from './MapView';
 import PostButton from '../../components/PostButton';
+import useGetPosts from './getPosts';
 
 const Home = () => {
   const history = useHistory();
+  const [posts, error] = useGetPosts();
+
+  console.log(posts);
 
   return (
     <>
       <Box pos="relative">
-        <MapView />
+        <MapView data={posts} />
       </Box>
       <PostButton onClick={() => history.push('/new-post')} />
     </>

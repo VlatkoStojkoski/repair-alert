@@ -75,19 +75,17 @@ app.post(
       ]);
       functions.logger.log('Resized image created at', tempFilePath);
 
-      const bucketFilePath = path.join('/', fileName);
-
       const downloadToken = nanoid();
       // Uploading the resized image.
       await bucket.upload(tempFilePath, {
-        destination: bucketFilePath,
+        destination: fileName,
         metadata: {
           metadata: {
             firebaseStorageDownloadTokens: downloadToken,
           },
         },
       });
-      functions.logger.log('Uploaded image to', bucketFilePath);
+      functions.logger.log('Uploaded image to', fileName);
 
       const downloadURL =
         `https://firebasestorage.googleapis.com/v0/b/${bucket.name}` +
