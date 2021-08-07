@@ -1,0 +1,17 @@
+[
+  {
+    "id": "waste",
+    "description": "отпад или отпадни материјали",
+    "short": "отпад"
+  },
+  {
+    "id": "road-damage",
+    "description": "оштетени патишта",
+    "short": "оштетени патишта"
+  },
+  {
+    "id": "wildfire",
+    "description": "диви пожари",
+    "short": "диви пожари"
+  }
+]

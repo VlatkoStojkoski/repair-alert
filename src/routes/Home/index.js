@@ -4,13 +4,11 @@ import { Box } from '@chakra-ui/react';
 
 import MapView from './MapView';
 import PostButton from '../../components/PostButton';
-import useGetPosts from './getPosts';
+import useGetPosts from './useGetPosts';
 
 const Home = () => {
   const history = useHistory();
   const [posts, error] = useGetPosts();
-
-  console.log(posts);
 
   return (
     <>

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import {
   forwardRef,
@@ -17,8 +18,10 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
 import { gps as extractGps } from 'exifr';
 
-import PostButton from '../../components/PostButton';
 import GoogleMap, { defaultCenter } from '../../components/GoogleMap';
+import BigContainer from '../../components/BigContainer';
+import PostButton from '../../components/PostButton';
+import { useGetCategories } from '../../api';
 import { MapPinIcon } from '../../icons';
 import storePost from './storePost';
 
@@ -62,8 +65,10 @@ const getDataFromFile = file =>
   });
 
 const NewPost = () => {
-  const [isPinScaled, setIsPinScaled] = useState(false);
   const [imageLocation, setImageLocation] = useState(null);
+  const [isPinScaled, setIsPinScaled] = useState(false);
+  const [categories] = useGetCategories();
+  const history = useHistory();
   const imageRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -80,18 +85,18 @@ const NewPost = () => {
   }, [imageLocation]);
 
   return (
-    <Box px="7" maxW="500px" minH="100%" h="100%" pt="16" pb="12" mx="auto">
+    <BigContainer>
       <Formik
         initialValues={{
           content: '',
-          type: '',
+          category: '',
           location: defaultCenter,
           image: null,
         }}
         onSubmit={async (values, actions) => {
-          await storePost(values);
-          alert(JSON.stringify(values, null, 2));
+          const postData = await storePost(values);
           actions.setSubmitting(false);
+          history.push(`/post/${postData.postId}`);
         }}
       >
         {props => (
@@ -163,26 +168,29 @@ const NewPost = () => {
                 }}
               </Field>
               <Field
-                name="type"
+                name="category"
                 validate={value => !value && '* Ова поле е задолжително'}
               >
                 {({ field, form }) => (
                   <FormControl
-                    isInvalid={form.errors.type && form.touched.type}
+                    isInvalid={form.errors.category && form.touched.category}
                     isRequired
                   >
                     <Select
                       {...field}
-                      name="type"
+                      name="category"
                       placeholder="Вид на проблем"
                       w="max-content"
                       mx="auto"
                     >
-                      <option value="road-damage">Оштетување на патот</option>
-                      <option value="waste">Депонија / отпад</option>
+                      {categories.map(({ id, short }, categoryI) => (
+                        <option key={categoryI} value={id}>
+                          {short.toFirstUpperCase()}
+                        </option>
+                      ))}
                     </Select>
                     <FormErrorMessage justifyContent="center">
-                      {form.errors.type}
+                      {form.errors.category}
                     </FormErrorMessage>
                   </FormControl>
                 )}
@@ -249,7 +257,7 @@ const NewPost = () => {
           </Form>
         )}
       </Formik>
-    </Box>
+    </BigContainer>
   );
 };
 

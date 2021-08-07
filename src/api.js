@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
@@ -26,3 +27,74 @@ firebase.analytics();
 export const storage = firebase.storage();
 export const db = firebase.firestore();
 export { firebase };
+
+class Post {
+  constructor(downloadURL, category, content, location, id) {
+    this.downloadURL = downloadURL;
+    this.category = category;
+    this.content = content;
+    this.location = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    };
+    this.id = id;
+  }
+}
+
+export const postConverter = {
+  fromFirestore(snapshot, options) {
+    const data = snapshot.data(options);
+
+    return new Post(
+      data.downloadURL,
+      data.category,
+      data.content,
+      data.location,
+      snapshot.id
+    );
+  },
+};
+
+export const useGetCategories = () => {
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(
+    () =>
+      (async () => {
+        try {
+          const { data } = await axios.get('/api/categories');
+
+          setCategories(data);
+        } catch (error) {
+          setError(error);
+        }
+      })(),
+    []
+  );
+
+  return [categories, error];
+};
+
+export const useGetCategory = categoryId => {
+  const [category, setCategory] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(
+    () =>
+      (async () => {
+        if (!categoryId) return;
+
+        try {
+          const { data } = await axios.get('/api/categories');
+
+          setCategory(data.find(ctg => ctg.id === categoryId));
+        } catch (error) {
+          setError(error);
+        }
+      })(),
+    [categoryId]
+  );
+
+  return [category, error];
+};

@@ -1,21 +1,22 @@
 import React, { useState, useRef } from 'react';
-import useAxios from 'axios-hooks';
+import { useHistory } from 'react-router-dom';
 import useSupercluster from 'use-supercluster';
 import { Box, Button, Flex, Image } from '@chakra-ui/react';
 
 import GoogleMap, { Marker } from '../../components/GoogleMap';
 
 const MapView = ({ data }) => {
-  const mapRef = useRef();
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(10);
+  const mapRef = useRef();
+  const history = useHistory();
 
   const points = data.map(post => ({
     type: 'Feature',
     properties: {
       cluster: false,
       postId: post.id,
-      type: post.type,
+      category: post.category,
     },
     geometry: {
       type: 'Point',
@@ -93,11 +94,17 @@ const MapView = ({ data }) => {
               lat={latitude}
               lng={longitude}
             >
-              {(() => console.log(cluster.properties))()}
-              <Button variant="ghost" colorScheme="transparent">
+              <Button
+                onClick={() =>
+                  history.push(`/post/${cluster.properties.postId}`)
+                }
+                variant="ghost"
+                colorScheme="transparent"
+                transform="translate(-50%, -50%)"
+              >
                 <Image
                   w="25px"
-                  src={`/${cluster.properties.type}.svg`}
+                  src={`/${cluster.properties.category}.svg`}
                   alt="post image"
                 />
               </Button>

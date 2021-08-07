@@ -2,19 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-const spawn = require('child-process-promise').spawn;
-const path = require('path');
-const os = require('os');
-const fs = require('fs/promises');
-
-const mime = require('mime-types');
-
-const mmm = require('mmmagic');
-const magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
-
-const dataUriToBuffer = require('data-uri-to-buffer');
-const { nanoid } = require('nanoid');
-
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -29,17 +16,35 @@ app.get('/', (req, res) => {
   res.json({ bongs: 'BONG '.repeat(hours) });
 });
 
-const detectMIMEType = buffer =>
-  new Promise((res, rej) => {
-    magic.detect(buffer, (err, result) => {
-      if (err) rej(err);
-      res(result);
-    });
-  });
+app.get('/categories', (req, res) => {
+  const categories = require('./categories.json');
+  res.json(categories);
+});
 
 app.post(
   '/post/new',
-  async ({ body: { image, type, content, location } }, res) => {
+  async ({ body: { image, category, content, location } }, res) => {
+    const spawn = require('child-process-promise').spawn;
+    const path = require('path');
+    const os = require('os');
+    const fs = require('fs/promises');
+
+    const mime = require('mime-types');
+
+    const mmm = require('mmmagic');
+    const magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
+
+    const dataUriToBuffer = require('data-uri-to-buffer');
+    const { nanoid } = require('nanoid');
+
+    const detectMIMEType = buffer =>
+      new Promise((res, rej) => {
+        magic.detect(buffer, (err, result) => {
+          if (err) rej(err);
+          res(result);
+        });
+      });
+
     try {
       const imageBuf = await dataUriToBuffer(image);
 
@@ -89,22 +94,23 @@ app.post(
 
       const downloadURL =
         `https://firebasestorage.googleapis.com/v0/b/${bucket.name}` +
-        `/o/%5C${fileName}?alt=media&token=${downloadToken}`;
+        `/o/${fileName}?alt=media&token=${downloadToken}`;
 
       await admin
         .firestore()
         .collection('posts')
         .doc(postId)
         .set({
-          type,
+          category,
           location: new admin.firestore.GeoPoint(location.lat, location.lng),
           content,
           downloadURL,
+          approved: true,
         });
       functions.logger.log('Post stored to firestore db with id', postId);
 
       // Once the resized image has been uploaded delete the local file to free up disk space.
-      fs.unlink(tempFilePath);
+      await fs.unlink(tempFilePath);
 
       return res.json({ postId, downloadURL });
     } catch (error) {

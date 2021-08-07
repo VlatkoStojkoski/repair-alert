@@ -1,32 +1,5 @@
 import { useEffect, useState } from 'react';
-import { db } from '../../api';
-
-class Post {
-  constructor(downloadURL, type, content, location, id) {
-    this.downloadURL = downloadURL;
-    this.type = type;
-    this.content = content;
-    this.location = {
-      latitude: location.latitude,
-      longitude: location.longitude,
-    };
-    this.id = id;
-  }
-}
-
-const postConverter = {
-  fromFirestore(snapshot, options) {
-    const data = snapshot.data(options);
-
-    return new Post(
-      data.downloadURL,
-      data.type,
-      data.content,
-      data.location,
-      snapshot.id
-    );
-  },
-};
+import { db, postConverter } from '../../api';
 
 export default function useGetPosts() {
   const [posts, setPosts] = useState([]);
