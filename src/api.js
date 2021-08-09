@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/firestore';
 import 'firebase/storage';
+import 'firebase/auth';
 
 const axios = Axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -26,6 +27,7 @@ firebase.analytics();
 
 export const storage = firebase.storage();
 export const db = firebase.firestore();
+export const auth = firebase.auth();
 export { firebase };
 
 class Post {
@@ -97,4 +99,18 @@ export const useGetCategory = categoryId => {
   );
 
   return [category, error];
+};
+
+export const useCurrentUser = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const unlisten = auth.onAuthStateChanged(setCurrentUser);
+
+    return () => {
+      unlisten();
+    };
+  }, []);
+
+  return currentUser;
 };

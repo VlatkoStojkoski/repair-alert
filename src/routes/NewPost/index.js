@@ -13,6 +13,7 @@ import {
   Textarea,
   VStack,
   Image,
+  Input,
 } from '@chakra-ui/react';
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
@@ -88,6 +89,7 @@ const NewPost = () => {
     <BigContainer>
       <Formik
         initialValues={{
+          title: '',
           content: '',
           category: '',
           location: defaultCenter,
@@ -196,7 +198,7 @@ const NewPost = () => {
                 )}
               </Field>
               <Field
-                name="content"
+                name="title"
                 validate={value => !value && '* Ова поле е задолжително'}
               >
                 {({ field, form }) => (
@@ -211,6 +213,18 @@ const NewPost = () => {
                       placeholder="Која е содржината на објавата?"
                     />
                     <FormErrorMessage>{form.errors.content}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="title">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="title">Содржина:</FormLabel>
+                    <Input
+                      {...field}
+                      name="title"
+                      placeholder="Наслов на објава"
+                    />
                   </FormControl>
                 )}
               </Field>

@@ -21,7 +21,7 @@ ReactDOM.render(
         top="100%"
         pos="sticky"
         transform="translateX(-50%)"
-        zIndex="9999"
+        zIndex="overlay"
       ></Box>
       <Box minH="fill_h" minW="100%">
         <Routes />

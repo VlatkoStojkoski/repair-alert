@@ -8,7 +8,7 @@ const BigContainer = ({ children, ...props }) => {
       maxW="500px"
       minH="100%"
       h="100%"
-      pt="16"
+      pt="20"
       pb="12"
       mx="auto"
       {...props}

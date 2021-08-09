@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Box, IconButton, Button } from '@chakra-ui/react';
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+
+import SignInModal from './SignInModal';
+import { useCurrentUser } from '../api';
+
+const Navigation = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const history = useHistory();
+  const currentUser = useCurrentUser();
+
+  console.log(currentUser);
+
+  return (
+    <>
+      <Box pos="sticky" h="0" w="100%" top="0" zIndex="overlay">
+        <IconButton
+          onClick={() => history.goBack()}
+          icon={<ArrowBackIcon />}
+          borderRadius="50%"
+          colorScheme="brand_red"
+          size="md"
+          pos="absolute"
+          top="4"
+          left="4"
+        />
+
+        {!currentUser ? (
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            onClick={() => setIsModalOpen(true)}
+            colorScheme="brand_red"
+            variant="solid"
+            pos="absolute"
+            top="4"
+            right="4"
+          >
+            Логирај се
+          </Button>
+        ) : (
+          <Button
+            rightIcon={<ArrowForwardIcon />}
+            onClick={() => history.push('/profile')}
+            colorScheme="brand_red"
+            variant="solid"
+            pos="absolute"
+            top="4"
+            right="4"
+          >
+            Профил
+          </Button>
+        )}
+      </Box>
+
+      <SignInModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+};
+
+export default Navigation;

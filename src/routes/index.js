@@ -1,29 +1,31 @@
 import React from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
-import { Box, IconButton } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+import { Switch, Route } from 'react-router-dom';
 
-import Home from './Home';
+import BigContainer from '../components/BigContainer';
+import Navigation from '../layout/Navigation';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
 import NewPost from './NewPost';
+import Home from './Home';
 import Post from './Post';
+import Profile from './Profile';
 
 const Routes = () => {
-  const history = useHistory();
-
   return (
     <>
-      <Box pos="sticky" h="0" w="0" top="0" zIndex="9999">
-        <IconButton
-          icon={<ArrowBackIcon />}
-          borderRadius="50%"
-          colorScheme="brand_red"
-          size="md"
-          onClick={() => history.goBack()}
-          mt="4"
-          ml="4"
-        />
-      </Box>
+      <Navigation />
       <Switch>
+        <Route exact path="/profile">
+          <Profile />
+        </Route>
+        <Route exact path="/signup">
+          <SignUp />
+        </Route>
+        <Route exact path="/signin">
+          <BigContainer>
+            <SignIn />
+          </BigContainer>
+        </Route>
         <Route exact path="/new-post">
           <NewPost />
         </Route>
