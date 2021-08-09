@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import {
-  Box,
   Button,
   IconButton,
   Collapse,
@@ -9,13 +8,12 @@ import {
   Text,
   VStack,
   Flex,
+  Box,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
+import { useGetCategory, useGetPost, useGetAddress } from '../../api';
 import BigContainer from '../../components/BigContainer';
-import { useGetCategory } from '../../api';
-import useGetPost from './useGetPost';
-import useGetAddress from './useGetAddress';
 import { MapPinIcon } from '../../icons';
 
 const Post = () => {
@@ -58,7 +56,7 @@ const Post = () => {
             <Image
               w="25px"
               src={`/${category.id}.svg`}
-              alt="post image"
+              alt="post category icon"
               fill="black"
             />
             <Text fontSize="md">Оваа објава содржи {category.description}</Text>
@@ -78,13 +76,16 @@ const Post = () => {
                 if (newWindow) newWindow.opener = null;
               }}
             >
-              {address?.address}
+              <Text isTruncated>{address?.address}</Text>
             </Button>
           </Flex>
 
-          <Text bg="gray.100" p="3" py="2" borderRadius="md">
-            {post.content}
-          </Text>
+          <Box bg="gray.100" p="3" py="2" borderRadius="md">
+            <Text fontWeight="bold" fontSize="xl" mb="1">
+              {post.title}
+            </Text>
+            {post.content && <Text>{post.content}</Text>}
+          </Box>
         </VStack>
       )}
     </BigContainer>

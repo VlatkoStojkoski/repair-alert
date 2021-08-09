@@ -22,9 +22,9 @@ import { gps as extractGps } from 'exifr';
 import GoogleMap, { defaultCenter } from '../../components/GoogleMap';
 import BigContainer from '../../components/BigContainer';
 import PostButton from '../../components/PostButton';
-import { useGetCategories } from '../../api';
+import { useGetCategories, storePost } from '../../api';
 import { MapPinIcon } from '../../icons';
-import storePost from './storePost';
+import { toFirstUpperCase } from '../../utils';
 
 const MotionBox = motion(
   forwardRef((props, ref) => {
@@ -187,7 +187,7 @@ const NewPost = () => {
                     >
                       {categories.map(({ id, short }, categoryI) => (
                         <option key={categoryI} value={id}>
-                          {short.toFirstUpperCase()}
+                          {toFirstUpperCase(short)}
                         </option>
                       ))}
                     </Select>
@@ -203,27 +203,27 @@ const NewPost = () => {
               >
                 {({ field, form }) => (
                   <FormControl
-                    isInvalid={form.errors.content && form.touched.content}
+                    isInvalid={form.errors.title && form.touched.title}
                     isRequired
                   >
+                    <FormLabel htmlFor="title">Наслов:</FormLabel>
+                    <Input
+                      {...field}
+                      name="title"
+                      placeholder="Наслов на објава"
+                    />
+                    <FormErrorMessage>{form.errors.title}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="content">
+                {({ field, form }) => (
+                  <FormControl>
                     <FormLabel htmlFor="content">Содржина:</FormLabel>
                     <Textarea
                       {...field}
                       name="content"
                       placeholder="Која е содржината на објавата?"
-                    />
-                    <FormErrorMessage>{form.errors.content}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="title">
-                {({ field, form }) => (
-                  <FormControl>
-                    <FormLabel htmlFor="title">Содржина:</FormLabel>
-                    <Input
-                      {...field}
-                      name="title"
-                      placeholder="Наслов на објава"
                     />
                   </FormControl>
                 )}

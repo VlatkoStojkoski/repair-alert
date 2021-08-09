@@ -1,8 +1,8 @@
-import { axios } from '../../api';
+import { functions } from '.';
 
 export default async function storePost(post) {
   try {
-    const { data } = await axios.post('/api/post/new', post);
+    const { data } = await functions.httpsCallable('newPost')(post);
 
     return data;
   } catch (error) {

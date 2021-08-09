@@ -2,13 +2,13 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
-import MapView from './MapView';
 import PostButton from '../../components/PostButton';
-import useGetPosts from './useGetPosts';
+import { useGetPosts } from '../../api';
+import MapView from './MapView';
 
 const Home = () => {
   const history = useHistory();
-  const [posts, error] = useGetPosts();
+  const [posts] = useGetPosts();
 
   return (
     <>

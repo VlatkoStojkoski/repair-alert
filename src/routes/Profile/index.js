@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -9,15 +9,21 @@ import {
   VStack,
   Spacer,
   Text,
-  IconButton,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 
 import BigContainer from '../../components/BigContainer';
-import { auth, useCurrentUser, useGetCategory } from '../../api';
+import {
+  auth,
+  useCurrentUser,
+  useGetCategory,
+  useGetUserPosts,
+} from '../../api';
+import { toFirstUpperCase } from '../../utils';
 
-const PostPreview = ({ data: { downloadURL, categoryId, title } }) => {
-  const [category] = useGetCategory(categoryId);
+const PostPreview = ({ data, remove }) => {
+  const [category] = useGetCategory(data.category);
+  const [isShown, setIsShown] = useState(true);
 
   return (
     <Box w="100%">
@@ -34,7 +40,7 @@ const PostPreview = ({ data: { downloadURL, categoryId, title } }) => {
             w="100%"
             h="100%"
             objectFit="cover"
-            src={downloadURL}
+            src={data.downloadURL}
           />
         </Box>
 
@@ -46,7 +52,7 @@ const PostPreview = ({ data: { downloadURL, categoryId, title } }) => {
           isTruncated
         >
           <Box as="h3" fontSize="xl" fontWeight="bold" isTruncated>
-            {title}
+            {data.title}
           </Box>
 
           <Flex gridColumnGap="2" alignItems="center">
@@ -56,7 +62,7 @@ const PostPreview = ({ data: { downloadURL, categoryId, title } }) => {
               alt={`${category.id} category icon`}
             />
 
-            <Text fontSize="sm">{category.short?.toFirstUpperCase()}</Text>
+            <Text fontSize="sm">{toFirstUpperCase(category.short)}</Text>
           </Flex>
         </Flex>
       </Flex>
@@ -67,6 +73,10 @@ const PostPreview = ({ data: { downloadURL, categoryId, title } }) => {
         float="right"
         borderTopRadius="0"
         leftIcon={<DeleteIcon />}
+        onClick={async () => {
+          await data.onDelete.bind(data)();
+          window.location.reload();
+        }}
       >
         Избриши
       </Button>
@@ -78,59 +88,45 @@ const Profile = () => {
   const history = useHistory();
   const user = useCurrentUser();
 
+  const [posts, error] = useGetUserPosts();
+
+  if (error) console.error(error);
+
   return (
     <BigContainer>
       <Heading as="h1" textAlign="center" mb="5">
         {user?.displayName}
       </Heading>
 
-      <Heading as="h2" fontSize="xl">
-        Се проверува:
-      </Heading>
+      {posts.unapproved?.length ? (
+        <>
+          <Heading as="h2" fontSize="xl">
+            Се проверува:
+          </Heading>
 
-      <VStack gridRowGap="3" py="3">
-        <PostPreview
-          data={{
-            downloadURL:
-              'https://firebasestorage.googleapis.com/v0/b/repair-alert.appspot.com/o/-WK7noJyw9oHFTWkROiL1.jpeg?alt=media&token=rtRmg9yRP9Q0yrWkezMHL',
-            categoryId: 'road-damage',
-            title: 'Objava 2',
-          }}
-        />
-      </VStack>
+          <VStack gridRowGap="3" py="3">
+            {posts.unapproved?.map((post, postI) => (
+              <PostPreview data={post} key={post.id} />
+            ))}
+          </VStack>
+        </>
+      ) : null}
 
-      <Spacer height="3" />
+      {posts.approved?.length ? (
+        <>
+          <Spacer height="3" />
 
-      <Heading as="h2" fontSize="xl">
-        Објавено:
-      </Heading>
+          <Heading as="h2" fontSize="xl">
+            Објавено:
+          </Heading>
 
-      <VStack gridRowGap="3" py="3">
-        <PostPreview
-          data={{
-            downloadURL:
-              'https://firebasestorage.googleapis.com/v0/b/repair-alert.appspot.com/o/-WK7noJyw9oHFTWkROiL1.jpeg?alt=media&token=rtRmg9yRP9Q0yrWkezMHL',
-            categoryId: 'road-damage',
-            title: 'Objava 2',
-          }}
-        />
-        <PostPreview
-          data={{
-            downloadURL:
-              'https://firebasestorage.googleapis.com/v0/b/repair-alert.appspot.com/o/-WK7noJyw9oHFTWkROiL1.jpeg?alt=media&token=rtRmg9yRP9Q0yrWkezMHL',
-            categoryId: 'road-damage',
-            title: 'Objava 2',
-          }}
-        />
-        <PostPreview
-          data={{
-            downloadURL:
-              'https://firebasestorage.googleapis.com/v0/b/repair-alert.appspot.com/o/-WK7noJyw9oHFTWkROiL1.jpeg?alt=media&token=rtRmg9yRP9Q0yrWkezMHL',
-            categoryId: 'road-damage',
-            title: 'Objava 2',
-          }}
-        />
-      </VStack>
+          <VStack gridRowGap="3" py="3">
+            {posts.approved?.map((post, postI) => (
+              <PostPreview data={post} key={post.id} />
+            ))}
+          </VStack>
+        </>
+      ) : null}
 
       <Button
         onClick={() => auth.signOut().then(() => history.push('/'))}

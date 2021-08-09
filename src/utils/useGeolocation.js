@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useGeolocation = () => {
+export default function useGeolocation() {
   const [position, setPosition] = useState({});
   const [error, setError] = useState(null);
 
@@ -28,4 +28,4 @@ export const useGeolocation = () => {
     return () => geo.clearWatch(watcher);
   }, []);
   return { ...position, error };
-};
+}

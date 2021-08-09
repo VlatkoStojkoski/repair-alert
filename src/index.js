@@ -6,10 +6,6 @@ import { Box, ChakraProvider } from '@chakra-ui/react';
 import Routes from './routes';
 import theme from './theme';
 
-String.prototype.toFirstUpperCase = function () {
-  return this[0].toUpperCase() + this.substring(1).toLowerCase();
-};
-
 ReactDOM.render(
   <Router>
     <ChakraProvider theme={theme}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { axios } from '../../api';
+import { axios } from '.';
 
 export default function useGetAddress(location) {
   const [address, setAddress] = useState(null);

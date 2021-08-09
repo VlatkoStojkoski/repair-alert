@@ -3,6 +3,7 @@ import Axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/firestore';
+import 'firebase/functions';
 import 'firebase/storage';
 import 'firebase/auth';
 
@@ -28,18 +29,50 @@ firebase.analytics();
 export const storage = firebase.storage();
 export const db = firebase.firestore();
 export const auth = firebase.auth();
+
+export const functions = firebase.functions();
+functions.useEmulator('localhost', '5001');
+
 export { firebase };
 
+export { default as useGetUserPosts } from './useGetUserPosts';
+export { default as useGetAddress } from './useGetAddress';
+export { default as useGetPosts } from './useGetPosts';
+export { default as useGetPost } from './useGetPost';
+export { default as storePost } from './storePost';
+
 class Post {
-  constructor(downloadURL, category, content, location, id) {
+  constructor(
+    downloadURL,
+    category,
+    title,
+    content,
+    location,
+    approved,
+    visible,
+    id
+  ) {
     this.downloadURL = downloadURL;
     this.category = category;
+    this.title = title;
     this.content = content;
     this.location = {
       latitude: location.latitude,
       longitude: location.longitude,
     };
+    this.approved = approved;
+    this.visible = visible;
     this.id = id;
+  }
+
+  async onDelete() {
+    console.log(this);
+
+    const postRef = db.collection('posts').doc(this.id);
+
+    await postRef.update({
+      visible: false,
+    });
   }
 }
 
@@ -50,8 +83,11 @@ export const postConverter = {
     return new Post(
       data.downloadURL,
       data.category,
+      data.title,
       data.content,
       data.location,
+      data.approved,
+      data.visible,
       snapshot.id
     );
   },
@@ -65,8 +101,7 @@ export const useGetCategories = () => {
     () =>
       (async () => {
         try {
-          const { data } = await axios.get('/api/categories');
-
+          const { data } = await functions.httpsCallable('getCategories')();
           setCategories(data);
         } catch (error) {
           setError(error);
@@ -88,8 +123,7 @@ export const useGetCategory = categoryId => {
         if (!categoryId) return;
 
         try {
-          const { data } = await axios.get('/api/categories');
-
+          const { data } = await functions.httpsCallable('getCategories')();
           setCategory(data.find(ctg => ctg.id === categoryId));
         } catch (error) {
           setError(error);

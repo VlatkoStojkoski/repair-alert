@@ -11,8 +11,6 @@ const Navigation = () => {
   const history = useHistory();
   const currentUser = useCurrentUser();
 
-  console.log(currentUser);
-
   return (
     <>
       <Box pos="sticky" h="0" w="100%" top="0" zIndex="overlay">

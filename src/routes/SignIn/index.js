@@ -29,10 +29,7 @@ const SignIn = props => {
         }}
         onSubmit={({ name, email, password }, actions) => {
           (async () => {
-            const { user } = await auth.signInWithEmailAndPassword(
-              email,
-              password
-            );
+            await auth.signInWithEmailAndPassword(email, password);
             actions.setSubmitting(false);
             history.push('/profile');
             props?.closeModal();

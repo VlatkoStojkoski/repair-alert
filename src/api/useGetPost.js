@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { db, postConverter } from '../../api';
+import { db, postConverter } from './';
 
 export default function useGetPost(postId) {
   const [post, setPost] = useState(null);
@@ -8,6 +8,8 @@ export default function useGetPost(postId) {
   useEffect(
     () =>
       (async () => {
+        if (!postId) return;
+
         try {
           const postSnap = await db
             .collection('posts')
@@ -20,7 +22,7 @@ export default function useGetPost(postId) {
           setError(error);
         }
       })(),
-    []
+    [postId]
   );
 
   return [post, error];

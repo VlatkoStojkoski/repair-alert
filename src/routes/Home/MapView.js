@@ -105,7 +105,7 @@ const MapView = ({ data }) => {
                 <Image
                   w="25px"
                   src={`/${cluster.properties.category}.svg`}
-                  alt="post image"
+                  alt="post category icon"
                 />
               </Button>
             </Marker>

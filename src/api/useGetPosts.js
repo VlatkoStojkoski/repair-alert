@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { db, postConverter } from '../../api';
+import { db, postConverter } from '.';
 
 export default function useGetPosts() {
   const [posts, setPosts] = useState([]);
@@ -11,6 +11,7 @@ export default function useGetPosts() {
         try {
           const postsSnap = await db
             .collection('posts')
+            .where('visible', '==', true)
             .where('approved', '==', true)
             .withConverter(postConverter)
             .get();

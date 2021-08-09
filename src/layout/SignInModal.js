@@ -1,25 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Modal,
   ModalOverlay,
-  ModalHeader,
   ModalCloseButton,
   ModalBody,
-  FormControl,
-  FormLabel,
-  Input,
   ModalFooter,
   Button,
   ModalContent,
-  Box,
-  PinInput,
-  PinInputField,
-  HStack,
   Text,
 } from '@chakra-ui/react';
 
-import { auth } from '../api';
 import SignIn from '../routes/SignIn';
 
 const SignInModal = ({ onClose, isOpen }) => {
