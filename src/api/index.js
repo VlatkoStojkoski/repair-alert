@@ -31,7 +31,10 @@ export const db = firebase.firestore();
 export const auth = firebase.auth();
 
 export const functions = firebase.functions();
-functions.useEmulator('localhost', '5001');
+
+if (process.env.REACT_APP_IS_DEV) {
+  functions.useEmulator('localhost', '5001');
+}
 
 export { firebase };
 

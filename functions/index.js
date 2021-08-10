@@ -6,87 +6,118 @@ exports.getCategories = functions.https.onCall(() =>
 
 let adminInit = false;
 
-exports.newPost = functions.https.onCall(async (data, context) => {
-  const admin = require('firebase-admin');
+exports.newPost = functions
+  .runWith({ memory: '2GB' })
+  .https.onCall(async (data, context) => {
+    const admin = require('firebase-admin');
 
-  if (!adminInit) {
-    admin.initializeApp();
-    adminInit = true;
-  }
+    if (!adminInit) {
+      admin.initializeApp();
+      adminInit = true;
+    }
 
-  const spawn = require('child-process-promise').spawn;
-  const path = require('path');
-  const os = require('os');
-  const fs = require('fs/promises');
+    const spawn = require('child-process-promise').spawn;
+    const path = require('path');
+    const os = require('os');
+    const fs = require('fs/promises');
 
-  const mime = require('mime-types');
+    const mime = require('mime-types');
 
-  const mmm = require('mmmagic');
-  const magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
+    const mmm = require('mmmagic');
+    const magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE);
 
-  const dataUriToBuffer = require('data-uri-to-buffer');
-  const { nanoid } = require('nanoid');
+    const dataUriToBuffer = require('data-uri-to-buffer');
+    const { nanoid } = require('nanoid');
 
-  const { image, title, category, content, location } = data;
+    const { image, title, category, content, location } = data;
 
-  const detectMIMEType = buffer =>
-    new Promise((res, rej) => {
-      magic.detect(buffer, (err, result) => {
-        if (err) rej(err);
-        res(result);
+    const detectMIMEType = buffer =>
+      new Promise((res, rej) => {
+        magic.detect(buffer, (err, result) => {
+          if (err) rej(err);
+          res(result);
+        });
       });
-    });
 
-  try {
-    const imageBuf = await dataUriToBuffer(image);
+    const resize = (inputPath, outputPath) =>
+      spawn('convert', [
+        inputPath,
+        '-strip',
+        '-interlace',
+        'Plane',
+        '-gaussian-blur',
+        '0.05',
+        '-quality',
+        '75%',
+        '-resize',
+        '512x512',
+        outputPath,
+      ]);
+
+    const uploadToBucket = (
+      bucket,
+      inputPath,
+      destinationPath,
+      downloadToken
+    ) =>
+      bucket.upload(inputPath, {
+        destination: destinationPath,
+        metadata: {
+          metadata: {
+            firebaseStorageDownloadTokens: downloadToken,
+          },
+        },
+      });
+
+    const getDownloadURL = (bucket, filePath, downloadToken) =>
+      `https://firebasestorage.googleapis.com/v0/b/${bucket.name}` +
+      `/o/${filePath}?alt=media&token=${downloadToken}`;
+
+    const imageBuf = dataUriToBuffer(image);
 
     const MIMEType = await detectMIMEType(imageBuf);
 
     if (!MIMEType.startsWith('image/'))
       throw Error({ code: 'invalid-image', message: 'Invalid image format' });
 
+    const bucket = admin.storage().bucket();
+
     const postId = nanoid();
+    const downloadToken = nanoid();
 
     const fileName = `${postId}.${mime.extension(MIMEType)}`;
-
-    const bucket = admin.storage().bucket();
     const tempFilePath = path.join(os.tmpdir(), fileName);
 
-    // Write the image to a temporary file
-    await fs.writeFile(tempFilePath, imageBuf);
+    await fs.writeFile(tempFilePath, imageBuf).catch(err => {
+      throw new functions.https.HttpsError(
+        'unknown',
+        'Something went wrong while writing file to disk',
+        { error: err.message }
+      );
+    });
     functions.logger.log('Image saved locally to', tempFilePath);
 
-    // Generate a resized image using ImageMagick.
-    await spawn('convert', [
-      tempFilePath,
-      '-strip',
-      '-interlace',
-      'Plane',
-      '-gaussian-blur',
-      '0.05',
-      '-quality',
-      '75%',
-      '-resize',
-      '512x512',
-      tempFilePath,
-    ]);
+    await resize(tempFilePath, tempFilePath).catch(err => {
+      throw new functions.https.HttpsError(
+        'unknown',
+        'Something went wrong while resizing the image',
+        { error: err.message }
+      );
+    });
     functions.logger.log('Resized image created at', tempFilePath);
 
-    const downloadToken = nanoid();
-    // Uploading the resized image.
-    await bucket.upload(tempFilePath, {
-      destination: fileName,
-      metadata: {
-        metadata: {
-          firebaseStorageDownloadTokens: downloadToken,
-        },
-      },
-    });
+    await uploadToBucket(bucket, tempFilePath, fileName, downloadToken).catch(
+      err => {
+        throw new functions.https.HttpsError(
+          'unknown',
+          'Something went wrong while uploading the image',
+          { error: err.message }
+        );
+      }
+    );
     functions.logger.log('Uploaded image to', fileName);
 
-    const downloadURL =
-      `https://firebasestorage.googleapis.com/v0/b/${bucket.name}` +
-      `/o/${fileName}?alt=media&token=${downloadToken}`;
+    const downloadURL = await getDownloadURL(bucket, fileName, downloadToken);
 
     await admin
       .firestore()
@@ -102,19 +133,17 @@ exports.newPost = functions.https.onCall(async (data, context) => {
         visible: true,
         uid: context.auth.uid,
         postedAt: new admin.firestore.Timestamp(parseInt(Date.now() / 1000), 0),
+      })
+      .catch(err => {
+        throw new functions.https.HttpsError(
+          'unknown',
+          'Something went wrong while storing the post',
+          { error: err.message }
+        );
       });
     functions.logger.log('Post stored to firestore db with id', postId);
 
-    // Once the resized image has been uploaded delete the local file to free up disk space.
     await fs.unlink(tempFilePath);
 
-    return { postId, downloadURL };
-  } catch (err) {
-    const error =
-      err.code && err.message ? [err.code, err.message] : ['internal', err];
-
-    functions.logger.error('An error has occured:', error);
-
-    throw new functions.https.HttpsError(...error);
-  }
-});
+    return { postId };
+  });

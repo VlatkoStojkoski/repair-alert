@@ -2,16 +2,19 @@
   {
     "id": "waste",
     "description": "отпад или отпадни материјали",
-    "short": "отпад"
+    "short": "отпад",
+    "duration": 432000
   },
   {
     "id": "road-damage",
     "description": "оштетени патишта",
-    "short": "оштетени патишта"
+    "short": "оштетени патишта",
+    "duration": 259200
   },
   {
     "id": "wildfire",
     "description": "диви пожари",
-    "short": "диви пожари"
+    "short": "диви пожари",
+    "duration": 172800
   }
 ]
