@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, IconButton, Button } from '@chakra-ui/react';
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { Hous, ArrowForwardIcon } from '@chakra-ui/icons';
 
 import SignInModal from './SignInModal';
+import { HomeIcon } from '../icons';
 import { useCurrentUser } from '../api';
 
 const Navigation = () => {
@@ -15,8 +16,8 @@ const Navigation = () => {
     <>
       <Box pos="sticky" h="0" w="100%" top="0" zIndex="overlay">
         <IconButton
-          onClick={() => history.goBack()}
-          icon={<ArrowBackIcon />}
+          onClick={() => history.push('/')}
+          icon={<HomeIcon />}
           borderRadius="50%"
           colorScheme="brand_red"
           size="md"

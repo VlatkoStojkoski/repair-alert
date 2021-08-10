@@ -23,6 +23,7 @@ import GoogleMap, { defaultCenter } from '../../components/GoogleMap';
 import BigContainer from '../../components/BigContainer';
 import PostButton from '../../components/PostButton';
 import { useGetCategories, storePost } from '../../api';
+import { useGeolocation } from '../../utils';
 import { MapPinIcon } from '../../icons';
 import { toFirstUpperCase } from '../../utils';
 
@@ -66,6 +67,7 @@ const getDataFromFile = file =>
   });
 
 const NewPost = () => {
+  const { latitude: lat, longitude: lng, error: geoError } = useGeolocation();
   const [imageLocation, setImageLocation] = useState(null);
   const [isPinScaled, setIsPinScaled] = useState(false);
   const [categories] = useGetCategories();
@@ -92,7 +94,7 @@ const NewPost = () => {
           title: '',
           content: '',
           category: '',
-          location: defaultCenter,
+          location: !geoError ? { lat, lng } : defaultCenter,
           image: null,
         }}
         onSubmit={async (values, actions) => {

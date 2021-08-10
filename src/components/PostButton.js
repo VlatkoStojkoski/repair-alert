@@ -14,7 +14,7 @@ const PostButton = props => {
   return (
     <Portal containerRef={portalRef}>
       <Button
-        colorScheme="brand_blue"
+        colorScheme="brand_red"
         px="6"
         borderRadius="xl"
         size="lg"

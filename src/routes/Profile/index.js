@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -20,6 +20,7 @@ import {
   useGetUserPosts,
 } from '../../api';
 import { toFirstUpperCase } from '../../utils';
+import PostButton from '../../components/PostButton';
 
 const PostPreview = ({ data, remove }) => {
   const [category] = useGetCategory(data.category);
@@ -27,45 +28,47 @@ const PostPreview = ({ data, remove }) => {
 
   return (
     <Box w="100%">
-      <Flex
-        h="87.5px"
-        w="100%"
-        borderWidth="1px"
-        borderBottomWidth="0"
-        borderTopRadius="md"
-      >
-        <Box w="clamp(70px, 30%, 137.5px)" h="100%" flex="0 0 auto">
-          <Image
-            borderTopLeftRadius="md"
-            w="100%"
-            h="100%"
-            objectFit="cover"
-            src={data.downloadURL}
-          />
-        </Box>
-
+      <Link to={`/post/${data.id}`}>
         <Flex
-          flexDir="column"
-          flexGrow="1"
-          p="3"
-          justifyContent="space-between"
-          isTruncated
+          h="87.5px"
+          w="100%"
+          borderWidth="1px"
+          borderBottomWidth="0"
+          borderTopRadius="md"
         >
-          <Box as="h3" fontSize="xl" fontWeight="bold" isTruncated>
-            {data.title}
+          <Box w="clamp(70px, 30%, 137.5px)" h="100%" flex="0 0 auto">
+            <Image
+              borderTopLeftRadius="md"
+              w="100%"
+              h="100%"
+              objectFit="cover"
+              src={data.downloadURL}
+            />
           </Box>
 
-          <Flex gridColumnGap="2" alignItems="center">
-            <Image
-              boxSize="20px"
-              src={`/${category.id}.svg`}
-              alt={`${category.id} category icon`}
-            />
+          <Flex
+            flexDir="column"
+            flexGrow="1"
+            p="3"
+            justifyContent="space-between"
+            isTruncated
+          >
+            <Box as="h3" fontSize="xl" fontWeight="bold" isTruncated>
+              {data.title}
+            </Box>
 
-            <Text fontSize="sm">{toFirstUpperCase(category.short)}</Text>
+            <Flex gridColumnGap="2" alignItems="center">
+              <Image
+                boxSize="20px"
+                src={`/${category.id}.svg`}
+                alt={`${category.id} category icon`}
+              />
+
+              <Text fontSize="sm">{toFirstUpperCase(category.short)}</Text>
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
+      </Link>
 
       <Button
         w="100%"
@@ -137,6 +140,8 @@ const Profile = () => {
       >
         Одлогирај се
       </Button>
+
+      <PostButton />
     </BigContainer>
   );
 };

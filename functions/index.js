@@ -129,9 +129,9 @@ exports.newPost = functions
         title,
         content,
         downloadURL,
-        approved: true,
+        approved: false,
         visible: true,
-        uid: context.auth.uid,
+        uid: context.auth?.uid || 'anonymous',
         postedAt: new admin.firestore.Timestamp(parseInt(Date.now() / 1000), 0),
       })
       .catch(err => {
