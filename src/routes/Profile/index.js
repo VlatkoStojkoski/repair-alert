@@ -60,11 +60,11 @@ const PostPreview = ({ data, remove }) => {
             <Flex gridColumnGap="2" alignItems="center">
               <Image
                 boxSize="20px"
-                src={`/${category.id}.svg`}
-                alt={`${category.id} category icon`}
+                src={`/${category?.id}.svg`}
+                alt={`${category?.id} category icon`}
               />
 
-              <Text fontSize="sm">{toFirstUpperCase(category.short)}</Text>
+              <Text fontSize="sm">{toFirstUpperCase(category?.short)}</Text>
             </Flex>
           </Flex>
         </Flex>

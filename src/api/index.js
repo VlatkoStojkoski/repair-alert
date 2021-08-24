@@ -32,10 +32,6 @@ export const auth = firebase.auth();
 
 export const functions = firebase.functions();
 
-if (process.env.REACT_APP_IS_DEV) {
-  functions.useEmulator('localhost', '5001');
-}
-
 export { firebase };
 
 export { default as useGetUserPosts } from './useGetUserPosts';
@@ -117,22 +113,18 @@ export const useGetCategories = () => {
 };
 
 export const useGetCategory = categoryId => {
-  const [category, setCategory] = useState([]);
-  const [error, setError] = useState(null);
+  const [categories, error] = useGetCategories();
+
+  const [category, setCategory] = useState(null);
 
   useEffect(
     () =>
       (async () => {
-        if (!categoryId) return;
+        if (!categoryId || !categories.length) return;
 
-        try {
-          const { data } = await functions.httpsCallable('getCategories')();
-          setCategory(data.find(ctg => ctg.id === categoryId));
-        } catch (error) {
-          setError(error);
-        }
+        setCategory(categories.find(ctg => ctg.id === categoryId));
       })(),
-    [categoryId]
+    [categoryId, categories]
   );
 
   return [category, error];

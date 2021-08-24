@@ -55,11 +55,13 @@ const Post = () => {
           <Flex gridColumnGap="3" px="3" borderRadius="md">
             <Image
               w="25px"
-              src={`/${category.id}.svg`}
+              src={`/${category?.id}.svg`}
               alt="post category icon"
               fill="black"
             />
-            <Text fontSize="md">Оваа објава содржи {category.description}</Text>
+            <Text fontSize="md">
+              Оваа објава содржи {category?.description}
+            </Text>
           </Flex>
 
           <Flex gridColumnGap="3" px="3" borderRadius="md">

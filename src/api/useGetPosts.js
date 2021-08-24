@@ -20,6 +20,8 @@ export default function useGetPosts() {
           postsSnap.forEach(post => postsArr.push(post.data()));
 
           setPosts(postsArr);
+
+          window.posts = postsArr;
         } catch (error) {
           setError(error);
         }

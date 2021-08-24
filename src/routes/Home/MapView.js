@@ -101,6 +101,7 @@ const MapView = ({ data }) => {
                 variant="ghost"
                 colorScheme="transparent"
                 transform="translate(-50%, -50%)"
+                p="0"
               >
                 <Image
                   w="25px"

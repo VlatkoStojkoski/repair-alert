@@ -67,7 +67,6 @@ const getDataFromFile = file =>
   });
 
 const NewPost = () => {
-  const { latitude: lat, longitude: lng, error: geoError } = useGeolocation();
   const [imageLocation, setImageLocation] = useState(null);
   const [isPinScaled, setIsPinScaled] = useState(false);
   const [categories] = useGetCategories();
@@ -94,7 +93,7 @@ const NewPost = () => {
           title: '',
           content: '',
           category: '',
-          location: !geoError ? { lat, lng } : defaultCenter,
+          location: defaultCenter,
           image: null,
         }}
         onSubmit={async (values, actions) => {

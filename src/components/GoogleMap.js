@@ -13,7 +13,8 @@ const GoogleMap = props => {
   return (
     <GoogleMapReact
       bootstrapURLKeys={{ key: 'AIzaSyAxMhStPfQ2hcl3gYOAetT4yxyESBEXnSw' }}
-      defaultCenter={!error ? { lat, lng } : defaultCenter}
+      defaultCenter={defaultCenter}
+      center={{ lat, lng }}
       defaultZoom={13}
       options={{
         fullscreenControl: false,
