@@ -11,7 +11,6 @@ ReactDOM.render(
     <ChakraProvider theme={theme}>
       <Box
         id="topPortal"
-        h="0"
         w="max-content"
         left="50%"
         top="100%"

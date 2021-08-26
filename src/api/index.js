@@ -31,26 +31,27 @@ export const db = firebase.firestore();
 export const auth = firebase.auth();
 
 export const functions = firebase.functions();
+functions.useEmulator('localhost', 5001);
 
 export { firebase };
 
 export { default as useGetUserPosts } from './useGetUserPosts';
-export { default as useGetAddress } from './useGetAddress';
 export { default as useGetPosts } from './useGetPosts';
 export { default as useGetPost } from './useGetPost';
 export { default as storePost } from './storePost';
 
 class Post {
-  constructor(
+  constructor({
     downloadURL,
     category,
     title,
     content,
     location,
+    address,
     approved,
     visible,
-    id
-  ) {
+    id,
+  }) {
     this.downloadURL = downloadURL;
     this.category = category;
     this.title = title;
@@ -59,6 +60,7 @@ class Post {
       latitude: location.latitude,
       longitude: location.longitude,
     };
+    this.address = address;
     this.approved = approved;
     this.visible = visible;
     this.id = id;
@@ -77,18 +79,28 @@ class Post {
 
 export const postConverter = {
   fromFirestore(snapshot, options) {
-    const data = snapshot.data(options);
+    const {
+      downloadURL,
+      category,
+      title,
+      content,
+      location,
+      address,
+      approved,
+      visible,
+    } = snapshot.data(options);
 
-    return new Post(
-      data.downloadURL,
-      data.category,
-      data.title,
-      data.content,
-      data.location,
-      data.approved,
-      data.visible,
-      snapshot.id
-    );
+    return new Post({
+      downloadURL,
+      category,
+      title,
+      content,
+      location,
+      address: address && address.replace('North Macedonia', 'Macedonia'),
+      approved,
+      visible,
+      id: snapshot.id,
+    });
   },
 };
 
@@ -100,7 +112,7 @@ export const useGetCategories = () => {
     () =>
       (async () => {
         try {
-          const { data } = await functions.httpsCallable('getCategories')();
+          let { data } = await functions.httpsCallable('getCategories')();
           setCategories(data);
         } catch (error) {
           setError(error);
@@ -143,3 +155,5 @@ export const useCurrentUser = () => {
 
   return currentUser;
 };
+
+export { default as errorCodes } from './errorCodes';

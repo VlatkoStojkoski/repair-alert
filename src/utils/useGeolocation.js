@@ -4,17 +4,6 @@ export default function useGeolocation() {
   const [position, setPosition] = useState({});
   const [error, setError] = useState(null);
 
-  const onChange = ({ coords }) => {
-    setPosition({
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    });
-  };
-
-  const onError = error => {
-    setError(error.message);
-  };
-
   useEffect(() => {
     const geo = navigator.geolocation;
 
@@ -23,9 +12,15 @@ export default function useGeolocation() {
       return;
     }
 
-    const watcher = geo.watchPosition(onChange, onError);
-
-    return () => geo.clearWatch(watcher);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) =>
+        setPosition({ latitude: coords.latitude, longitude: coords.longitude }),
+      setError,
+      {
+        enableHighAccuracy: true,
+      }
+    );
   }, []);
+
   return { ...position, error };
 }

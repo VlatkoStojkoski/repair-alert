@@ -37,6 +37,7 @@ const MapView = ({ data }) => {
   return (
     <Box h="fill_h" w="100%">
       <GoogleMap
+        setCenter
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map }) => {
           mapRef.current = map;

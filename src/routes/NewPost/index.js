@@ -67,6 +67,11 @@ const getDataFromFile = file =>
   });
 
 const NewPost = () => {
+  const {
+    latitude: currLat,
+    longitude: currLng,
+    error: geoError,
+  } = useGeolocation();
   const [imageLocation, setImageLocation] = useState(null);
   const [isPinScaled, setIsPinScaled] = useState(false);
   const [categories] = useGetCategories();
@@ -78,12 +83,20 @@ const NewPost = () => {
     +latitude === latitude &&
     +longitude === longitude && { lat: latitude, lng: longitude };
 
+  useEffect(
+    () =>
+      currLat &&
+      currLng &&
+      mapRef.current?.panTo({ lat: currLat, lng: currLng }),
+    [currLat, currLng]
+  );
+
   useEffect(() => {
     if (!imageLocation) return;
 
     const formattedLocation = formatExifLocation(imageLocation);
 
-    return formattedLocation && mapRef.current.panTo(formattedLocation);
+    return formattedLocation && mapRef.current?.panTo(formattedLocation);
   }, [imageLocation]);
 
   return (
@@ -256,6 +269,7 @@ const NewPost = () => {
                         onChange={({ center }) =>
                           form.setFieldValue('location', center)
                         }
+                        center={form.values.location}
                         onDrag={() => setIsPinScaled(true)}
                         onDragEnd={() => setIsPinScaled(false)}
                       />

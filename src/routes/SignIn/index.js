@@ -81,7 +81,11 @@ const SignIn = props => {
                 )}
               </Field>
 
-              <Button type="submit" isLoading={props.isSubmitting}>
+              <Button
+                type="submit"
+                isLoading={props.isSubmitting}
+                colorScheme="brand_red"
+              >
                 Логирај се
               </Button>
             </VStack>

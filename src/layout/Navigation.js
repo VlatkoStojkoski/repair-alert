@@ -9,8 +9,8 @@ import { useCurrentUser } from '../api';
 
 const Navigation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const history = useHistory();
   const currentUser = useCurrentUser();
+  const history = useHistory();
 
   return (
     <>

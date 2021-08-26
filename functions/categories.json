@@ -1,20 +1,20 @@
 [
   {
-    "id": "waste",
-    "description": "отпад или отпадни материјали",
-    "short": "отпад",
+    "id": "landfill",
+    "description": "депонија",
+    "short": "депонија",
     "duration": 432000
   },
   {
     "id": "road-damage",
-    "description": "оштетени патишта",
+    "description": "оштетени и неодржувани патишта",
     "short": "оштетени патишта",
     "duration": 259200
   },
   {
-    "id": "wildfire",
-    "description": "диви пожари",
-    "short": "диви пожари",
+    "id": "litter",
+    "description": "запуштени делови со голема количина отпадоци",
+    "short": "запуштени отпадоци",
     "duration": 172800
   }
 ]

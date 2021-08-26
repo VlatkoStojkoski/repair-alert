@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
-import { useGetCategory, useGetPost, useGetAddress } from '../../api';
+import { useGetCategory, useGetPost } from '../../api';
 import BigContainer from '../../components/BigContainer';
 import { MapPinIcon } from '../../icons';
 
@@ -22,7 +22,6 @@ const Post = () => {
     params: { postId },
   } = useRouteMatch('/post/:postId');
   const [post] = useGetPost(postId);
-  const [address] = useGetAddress(post?.location);
   const [category] = useGetCategory(post?.category);
 
   return (
@@ -64,23 +63,25 @@ const Post = () => {
             </Text>
           </Flex>
 
-          <Flex gridColumnGap="3" px="3" borderRadius="md">
-            <MapPinIcon w="25px" h="25px" color="brand_red.600" />
-            <Button
-              colorScheme="brand_red"
-              variant="link"
-              onClick={() => {
-                const newWindow = window.open(
-                  address?.mapsURL,
-                  '_blank',
-                  'noopener,noreferrer'
-                );
-                if (newWindow) newWindow.opener = null;
-              }}
-            >
-              <Text isTruncated>{address?.address}</Text>
-            </Button>
-          </Flex>
+          {post.address ? (
+            <Flex gridColumnGap="3" px="3" borderRadius="md">
+              <MapPinIcon w="25px" h="25px" color="brand_red.600" />
+              <Button
+                colorScheme="brand_red"
+                variant="link"
+                onClick={() => {
+                  const newWindow = window.open(
+                    `https://www.google.com/maps?z=13&q=loc:${post.location.latitude}+${post.location.longitude}`,
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                  if (newWindow) newWindow.opener = null;
+                }}
+              >
+                <Text isTruncated>{post.address}</Text>
+              </Button>
+            </Flex>
+          ) : null}
 
           <Box bg="gray.100" p="3" py="2" borderRadius="md">
             <Text fontWeight="bold" fontSize="xl" mb="1">

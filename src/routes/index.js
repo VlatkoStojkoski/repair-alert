@@ -9,8 +9,11 @@ import NewPost from './NewPost';
 import Home from './Home';
 import Post from './Post';
 import Profile from './Profile';
+import { useShowError } from '../utils';
 
 const Routes = () => {
+  let showError = useShowError();
+
   return (
     <>
       <Navigation />
@@ -19,7 +22,9 @@ const Routes = () => {
           <Profile />
         </Route>
         <Route exact path="/signup">
-          <SignUp />
+          <BigContainer>
+            <SignUp />
+          </BigContainer>
         </Route>
         <Route exact path="/signin">
           <BigContainer>

@@ -16,6 +16,8 @@ exports.newPost = functions
       adminInit = true;
     }
 
+    require('dotenv').config();
+
     const spawn = require('child-process-promise').spawn;
     const path = require('path');
     const os = require('os');
@@ -28,6 +30,11 @@ exports.newPost = functions
 
     const dataUriToBuffer = require('data-uri-to-buffer');
     const { nanoid } = require('nanoid');
+
+    const {
+      Client: MapClient,
+    } = require('@googlemaps/google-maps-services-js');
+    const mapClient = new MapClient({});
 
     const { image, title, category, content, location } = data;
 
@@ -117,7 +124,24 @@ exports.newPost = functions
     );
     functions.logger.log('Uploaded image to', fileName);
 
-    const downloadURL = await getDownloadURL(bucket, fileName, downloadToken);
+    let {
+      data: { results: addressResults },
+    } = await mapClient
+      .reverseGeocode({
+        params: {
+          latlng: `${location.lat},${location.lng}`,
+          location_type: 'APPROXIMATE',
+          key: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      })
+      .catch(err =>
+        functions.logger.error(
+          'Something went wrong while converting the address',
+          err.message
+        )
+      );
+
+    const downloadURL = getDownloadURL(bucket, fileName, downloadToken);
 
     await admin
       .firestore()
@@ -129,7 +153,11 @@ exports.newPost = functions
         title,
         content,
         downloadURL,
-        approved: false,
+        address:
+          addressResults?.[1]?.formatted_address ||
+          addressResults?.[0]?.formatted_address ||
+          null,
+        approved: true,
         visible: true,
         uid: context.auth?.uid || 'anonymous',
         postedAt: new admin.firestore.Timestamp(parseInt(Date.now() / 1000), 0),

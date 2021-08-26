@@ -12,13 +12,14 @@ import {
 } from '@chakra-ui/react';
 
 import { auth } from '../../api';
-import BigContainer from '../../components/BigContainer';
+import { useShowError } from '../../utils';
 
-const SignUp = () => {
+const SignUp = props => {
+  const showError = useShowError();
   const history = useHistory();
 
   return (
-    <BigContainer>
+    <>
       <Heading fontSize="xl" fontWeight="semibold" mb="4" py="2">
         Регистрирајте се
       </Heading>
@@ -29,15 +30,22 @@ const SignUp = () => {
           email: '',
           password: '',
         }}
-        onSubmit={({ name, email, password }, actions) => {
+        onSubmit={({ name, email, password }, { setSubmitting }) => {
           (async () => {
-            const { user } = await auth.createUserWithEmailAndPassword(
-              email,
-              password
-            );
-            await user.updateProfile({ displayName: name });
-            actions.setSubmitting(false);
-            history.push('/profile');
+            try {
+              const { user } = await auth.createUserWithEmailAndPassword(
+                email,
+                password
+              );
+              await user.updateProfile({ displayName: name });
+              setSubmitting(false);
+              history.push('/profile');
+              props?.closeModal();
+            } catch (e) {
+              setSubmitting(false);
+              console.error(e);
+              showError({ errorCode: e.code });
+            }
           })();
         }}
       >
@@ -102,14 +110,18 @@ const SignUp = () => {
                 )}
               </Field>
 
-              <Button type="submit" isLoading={props.isSubmitting}>
+              <Button
+                type="submit"
+                isLoading={props.isSubmitting}
+                colorScheme="brand_red"
+              >
                 Регистрирај се
               </Button>
             </VStack>
           </Form>
         )}
       </Formik>
-    </BigContainer>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Modal,
@@ -9,42 +9,52 @@ import {
   Button,
   ModalContent,
   Text,
+  Divider,
+  Box,
 } from '@chakra-ui/react';
 
 import SignIn from '../routes/SignIn';
+import SignUpModal from './SignUpModal';
 
 const SignInModal = ({ onClose, isOpen }) => {
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const history = useHistory();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
 
-      <ModalContent mx="1em">
-        <ModalCloseButton />
+        <ModalContent mx="5">
+          <ModalCloseButton />
 
-        <ModalBody>
-          <SignIn closeModal={onClose} />
-        </ModalBody>
+          <ModalBody pb="0">
+            <SignIn closeModal={onClose} />
+          </ModalBody>
 
-        <ModalFooter>
-          <Text textAlign="center" color="gray.800" fontSize="sm">
-            * Доколку немате кориснички профил, можете да се регистрирате{' '}
-            <Button
-              onClick={() => {
-                onClose();
-                history.push('/signup');
-              }}
-              colorScheme="brand_red"
-              variant="link"
-              fontWeight="bold"
-            >
-              овде
-            </Button>
-          </Text>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          <ModalFooter pt="3">
+            <Box w="100%" textAlign="center">
+              <Divider mb="3" />
+              <Button
+                onClick={() => {
+                  onClose();
+                  setIsSignUpOpen(true);
+                }}
+                colorScheme="brand_blue"
+                fontWeight="bold"
+              >
+                Создади нова сметка
+              </Button>
+            </Box>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <SignUpModal
+        isOpen={isSignUpOpen}
+        onClose={() => setIsSignUpOpen(false)}
+      />
+    </>
   );
 };
 
