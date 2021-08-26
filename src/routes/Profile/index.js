@@ -141,7 +141,7 @@ const Profile = () => {
         Одлогирај се
       </Button>
 
-      <PostButton />
+      <PostButton onClick={() => history.push('/new-post')} />
     </BigContainer>
   );
 };

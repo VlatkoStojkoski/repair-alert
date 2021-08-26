@@ -35,6 +35,7 @@ functions.useEmulator('localhost', 5001);
 
 export { firebase };
 
+export { default as getErrorMessage } from './getErrorMessage';
 export { default as useGetUserPosts } from './useGetUserPosts';
 export { default as useGetPosts } from './useGetPosts';
 export { default as useGetPost } from './useGetPost';
@@ -155,5 +156,3 @@ export const useCurrentUser = () => {
 
   return currentUser;
 };
-
-export { default as errorCodes } from './errorCodes';

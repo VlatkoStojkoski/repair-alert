@@ -9,6 +9,24 @@ let adminInit = false;
 exports.newPost = functions
   .runWith({ memory: '2GB' })
   .https.onCall(async (data, context) => {
+    const requiredFields = [
+      ['image', 'слика'],
+      ['title', 'наслов'],
+      ['category', 'категорија'],
+      ['location', 'локација'],
+    ];
+
+    const missingFields = requiredFields.filter(([field, translation]) => {
+      return !data[field];
+    });
+
+    if (missingFields.length)
+      throw new functions.https.HttpsError(
+        'unknown',
+        'Вашата објава не содржи ' +
+          missingFields.map(field => field[1]).join(',')
+      );
+
     const admin = require('firebase-admin');
 
     if (!adminInit) {
@@ -85,7 +103,7 @@ exports.newPost = functions
     const MIMEType = await detectMIMEType(imageBuf);
 
     if (!MIMEType.startsWith('image/'))
-      throw Error({ code: 'invalid-image', message: 'Invalid image format' });
+      throw new functions.https.HttpsError('unknown', 'Invalid image format');
 
     const bucket = admin.storage().bucket();
 

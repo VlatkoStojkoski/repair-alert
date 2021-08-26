@@ -1,21 +1,20 @@
-import { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 
-import { errorCodes } from '../api';
+import { getErrorMessage } from '../api';
 
 export default function useShowError() {
   const toast = useToast();
 
   return params => {
-    const { title, error: description } = params.errorCode
-      ? errorCodes[params.errorCode]
+    const { title, error } = params.errorCode
+      ? getErrorMessage(params.errorCode)
       : params;
 
     toast({
-      title,
-      description,
+      title: String(title),
+      description: String(error),
       status: 'error',
-      duration: 5000,
+      duration: 7500,
       isClosable: true,
     });
 

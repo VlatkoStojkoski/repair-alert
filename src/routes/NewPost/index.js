@@ -25,7 +25,7 @@ import PostButton from '../../components/PostButton';
 import { useGetCategories, storePost } from '../../api';
 import { useGeolocation } from '../../utils';
 import { MapPinIcon } from '../../icons';
-import { toFirstUpperCase } from '../../utils';
+import { toFirstUpperCase, useShowError } from '../../utils';
 
 const MotionBox = motion(
   forwardRef((props, ref) => {
@@ -75,8 +75,9 @@ const NewPost = () => {
   const [imageLocation, setImageLocation] = useState(null);
   const [isPinScaled, setIsPinScaled] = useState(false);
   const [categories] = useGetCategories();
-  const history = useHistory();
+  const showError = useShowError();
   const imageRef = useRef(null);
+  const history = useHistory();
   const mapRef = useRef(null);
 
   const formatExifLocation = ({ latitude, longitude }) =>
@@ -110,9 +111,16 @@ const NewPost = () => {
           image: null,
         }}
         onSubmit={async (values, actions) => {
-          const postData = await storePost(values);
-          actions.setSubmitting(false);
-          history.push(`/post/${postData.postId}`);
+          try {
+            const postData = await storePost(values);
+            actions.setSubmitting(false);
+            history.push(`/post/${postData.postId}`);
+          } catch (error) {
+            showError({
+              title: 'Грешка при објавување',
+              error: error.message,
+            });
+          }
         }}
       >
         {props => (
