@@ -18,7 +18,7 @@ const GoogleMap = props => {
       options={{
         fullscreenControl: false,
       }}
-      {...(props.setCenter && { center: { lat, lng } })}
+      center={lat && lng && { lat, lng }}
       {...props}
     ></GoogleMapReact>
   );
