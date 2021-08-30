@@ -28,95 +28,69 @@ const Post = () => {
   return (
     <BigContainer>
       {post && (
-        <>
-          <VStack gridGap="3" alignItems="normal">
-            <Collapse
-              startingHeight="300px"
-              in={isExtended}
-              style={{ position: 'relative' }}
-            >
-              <Image
-                src={post.downloadURL}
-                borderRadius="md"
-                objectFit="cover"
-                width="100%"
-                height="100%"
-              />
-              <IconButton
-                icon={isExtended ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                colorScheme="blackAlpha"
-                onClick={() => setIsExtended(!isExtended)}
-                mt="1rem"
-                pos="absolute"
-                bottom="2"
-                right="2"
-              />
-            </Collapse>
+        <VStack gridGap="3" alignItems="normal">
+          <Collapse
+            startingHeight="300px"
+            in={isExtended}
+            style={{ position: 'relative' }}
+          >
+            <Image
+              src={post.downloadURL}
+              borderRadius="md"
+              objectFit="cover"
+              width="100%"
+              height="100%"
+            />
+            <IconButton
+              icon={isExtended ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              colorScheme="blackAlpha"
+              onClick={() => setIsExtended(!isExtended)}
+              mt="1rem"
+              pos="absolute"
+              bottom="2"
+              right="2"
+            />
+          </Collapse>
 
+          <Flex gridColumnGap="3" px="3" borderRadius="md">
+            <Image
+              w="25px"
+              src={`/${category?.id}.svg`}
+              alt="post category icon"
+              fill="black"
+            />
+            <Text fontSize="md">
+              Оваа објава содржи {category?.description}
+            </Text>
+          </Flex>
+
+          {post.address ? (
             <Flex gridColumnGap="3" px="3" borderRadius="md">
-              <Image
-                w="25px"
-                src={`/${category?.id}.svg`}
-                alt="post category icon"
-                fill="black"
-              />
-              <Text fontSize="md">
-                Оваа објава содржи {category?.description}
-              </Text>
+              <MapPinIcon w="25px" h="25px" color="brand_red.600" />
+              <Button
+                colorScheme="brand_red"
+                variant="link"
+                onClick={() => {
+                  const newWindow = window.open(
+                    `https://www.google.com/maps?z=13&q=loc:${post.location.latitude}+${post.location.longitude}`,
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                  if (newWindow) newWindow.opener = null;
+                }}
+              >
+                <Text isTruncated>{post.address}</Text>
+              </Button>
             </Flex>
+          ) : null}
 
-            {post.address ? (
-              <Flex gridColumnGap="3" px="3" borderRadius="md">
-                <MapPinIcon w="25px" h="25px" color="brand_red.600" />
-                <Button
-                  colorScheme="brand_red"
-                  variant="link"
-                  onClick={() => {
-                    const newWindow = window.open(
-                      `https://www.google.com/maps?z=13&q=loc:${post.location.latitude}+${post.location.longitude}`,
-                      '_blank',
-                      'noopener,noreferrer'
-                    );
-                    if (newWindow) newWindow.opener = null;
-                  }}
-                >
-                  <Text isTruncated>{post.address}</Text>
-                </Button>
-              </Flex>
-            ) : null}
-
-            <Box bg="gray.100" p="3" py="2" borderRadius="md">
-              <Text fontWeight="bold" fontSize="xl" mb="1">
-                {post.title}
-              </Text>
-              {post.content && <Text>{post.content}</Text>}
-            </Box>
-          </VStack>
-
-          <Box mt="7">
-            <Heading as="h2" fontSize="2xl">
-              Коментари:
-            </Heading>
-
-            <VStack mt="3" gridGap="5" w="100%">
-              <Box bg="gray.200" borderRadius="md" w="100%" p="3">
-                <Text fontSize="lg" fontWeight="bold">
-                  Vlatko Stojkoski
-                </Text>
-
-                <Text>This is le test nigga</Text>
-              </Box>
-
-              <Box bg="gray.200" borderRadius="md" w="100%" p="3">
-                <Text fontSize="lg" fontWeight="bold">
-                  Vlatko Stojkoski
-                </Text>
-
-                <Text>This is le test nigga</Text>
-              </Box>
-            </VStack>
+          <Box bg="gray.100" p="3" py="2" borderRadius="md">
+            <Text fontWeight="bold" fontSize="xl" mb="1">
+              {post.title}
+            </Text>
+            {post.content && <Text>{post.content}</Text>}
           </Box>
-        </>
+        </VStack>
       )}
     </BigContainer>
   );
