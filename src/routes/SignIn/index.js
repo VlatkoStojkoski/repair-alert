@@ -12,8 +12,10 @@ import {
 } from '@chakra-ui/react';
 
 import { auth } from '../../api';
+import { useShowError } from '../../utils';
 
 const SignIn = props => {
+  const showError = useShowError();
   const history = useHistory();
 
   return (
@@ -27,12 +29,18 @@ const SignIn = props => {
           email: '',
           password: '',
         }}
-        onSubmit={({ name, email, password }, actions) => {
+        onSubmit={({ name, email, password }, { setSubmitting }) => {
           (async () => {
-            await auth.signInWithEmailAndPassword(email, password);
-            actions.setSubmitting(false);
-            history.push('/profile');
-            props?.closeModal();
+            try {
+              await auth.signInWithEmailAndPassword(email, password);
+              setSubmitting(false);
+              history.push('/profile');
+              props?.closeModal();
+            } catch (e) {
+              setSubmitting(false);
+              console.error(e);
+              showError({ errorCode: e.code });
+            }
           })();
         }}
       >
