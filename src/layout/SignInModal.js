@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Modal,
   ModalOverlay,
@@ -8,7 +7,6 @@ import {
   ModalFooter,
   Button,
   ModalContent,
-  Text,
   Divider,
   Box,
 } from '@chakra-ui/react';
@@ -18,7 +16,6 @@ import SignUpModal from './SignUpModal';
 
 const SignInModal = ({ onClose, isOpen }) => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const history = useHistory();
 
   return (
     <>

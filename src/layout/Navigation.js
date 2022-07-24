@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, IconButton, Button } from '@chakra-ui/react';
-import { Hous, ArrowForwardIcon } from '@chakra-ui/icons';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 
 import SignInModal from './SignInModal';
 import { HomeIcon } from '../icons';

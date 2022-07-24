@@ -9,7 +9,6 @@ import {
   VStack,
   Flex,
   Box,
-  Heading,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 

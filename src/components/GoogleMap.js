@@ -12,7 +12,7 @@ const GoogleMap = props => {
 
   return (
     <GoogleMapReact
-      bootstrapURLKeys={{ key: 'AIzaSyAxMhStPfQ2hcl3gYOAetT4yxyESBEXnSw' }}
+      bootstrapURLKeys={{ key: 'AIzaSyBdPnmrg8YonjYq_dp2ub7vzj3vHuu-qvo' }}
       defaultCenter={defaultCenter}
       defaultZoom={13}
       options={{

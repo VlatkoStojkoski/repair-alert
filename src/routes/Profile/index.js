@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
   Box,
@@ -24,7 +24,6 @@ import PostButton from '../../components/PostButton';
 
 const PostPreview = ({ data, remove }) => {
   const [category] = useGetCategory(data.category);
-  const [isShown, setIsShown] = useState(true);
 
   return (
     <Box w="100%">

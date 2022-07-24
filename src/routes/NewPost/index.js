@@ -70,7 +70,6 @@ const NewPost = () => {
   const {
     latitude: currLat,
     longitude: currLng,
-    error: geoError,
   } = useGeolocation();
   const [imageLocation, setImageLocation] = useState(null);
   const [isPinScaled, setIsPinScaled] = useState(false);

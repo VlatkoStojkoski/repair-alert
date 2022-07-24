@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
-import Axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
 import 'firebase/auth';
-
-const axios = Axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
-});
-
-export { axios };
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAxMhStPfQ2hcl3gYOAetT4yxyESBEXnSw',

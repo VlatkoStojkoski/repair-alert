@@ -149,7 +149,7 @@ exports.newPost = functions
         params: {
           latlng: `${location.lat},${location.lng}`,
           location_type: 'APPROXIMATE',
-          key: process.env.GOOGLE_MAPS_API_KEY,
+          key: 'AIzaSyBdPnmrg8YonjYq_dp2ub7vzj3vHuu-qvo',
         },
       })
       .catch(err =>

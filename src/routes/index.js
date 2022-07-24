@@ -9,12 +9,8 @@ import NewPost from './NewPost';
 import Home from './Home';
 import Post from './Post';
 import Profile from './Profile';
-import { useShowError } from '../utils';
 
-const Routes = () => {
-  let showError = useShowError();
-
-  return (
+const Routes = () => (
     <>
       <Navigation />
       <Switch>
@@ -43,6 +39,5 @@ const Routes = () => {
       </Switch>
     </>
   );
-};
 
 export default Routes;
